@@ -10,6 +10,8 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
+    let userDefaults = UserDefaults.standard
+
     class Item {
         var title : String
         var done: Bool = false
@@ -20,7 +22,15 @@ class TodoListViewController: UITableViewController {
     }
     
     // この配列に作ったアイテムを追加していく
+    
+    
     var itemArray: [Item] = []
+    
+    
+    
+   
+    
+    
     
     override func viewDidLoad() {
         
@@ -109,6 +119,16 @@ class TodoListViewController: UITableViewController {
         let indexPaths = [indexPath]
         tableView.deleteRows(at: indexPaths, with: .automatic)
         
+    }
+    
+    @IBAction func saveMemo() {
+        
+//        saveDate.set()
+        
+        //  保存
+        userDefaults.set("保存する内容", forKey: "key01")
+        userDefaults.set(100, forKey: "key02")
+
     }
     
     
