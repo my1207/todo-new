@@ -9,9 +9,7 @@
 import UIKit
 
 class TodoListViewController: UITableViewController {
-
     let userDefaults = UserDefaults.standard
-
     class Item {
         var title : String
         var done: Bool = false
@@ -20,31 +18,28 @@ class TodoListViewController: UITableViewController {
             self.title = title
         }
     }
-    
     // この配列に作ったアイテムを追加していく
-    
-    
     var itemArray: [Item] = []
-    
-    
-    
-   
-    
-    
+    var saveArray: [String] = []
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         
         // NaviBarのタイトルを大きく表示させる
         navigationController?.navigationBar.prefersLargeTitles = true
-        
         // あらかじめ3つアイテムを作っておく
-        
-        
+        if userDefaults.array(forKey: "saveData") != nil{
+            saveArray = userDefaults.array(forKey: "saveData") as! [String]
+            print("test")
+            
+            
+      }
         // 配列に追加
-   
-        
+        var i:Int = 0
+        for _ in saveArray{
+            itemArray.append(Item(title: saveArray[i]))//saveArrayitemArrayに入れる
+            i = i + 1
+        }
     }
     
     
@@ -90,21 +85,23 @@ class TodoListViewController: UITableViewController {
         
         var textField = UITextField()
         
-        let alert = UIAlertController(title: "追加", message: "", preferredStyle: .alert)
+        let alert = UIAlertController(title: "リストを作成", message: "", preferredStyle: .alert)
         
-        let action = UIAlertAction(title: "リストに追加", style: .default) { (action) in
+        let action = UIAlertAction(title: "追加", style: .default) { (action) in
             // 「リストに追加」を押された時に実行される処理
             
-            let newItem: Item = Item(title: textField.text!)
-            
+            let newItem: Item = Item(title: textField.text!) //
             // アイテム追加処理
             self.itemArray.append(newItem)
+            self.saveArray.append(textField.text!)
+            self.userDefaults.set(self.saveArray, forKey: "saveData")
+            print(self.userDefaults.array(forKey: "saveData") as! [String])
             self.tableView.reloadData()
             
         }
         
         alert.addTextField { (alertTextField) in
-            alertTextField.placeholder = "新しいアイテム"
+            alertTextField.placeholder = "なにがしたいですか？"
             textField = alertTextField
         }
         
@@ -116,6 +113,8 @@ class TodoListViewController: UITableViewController {
         
         // アイテム削除処理
         itemArray.remove(at: indexPath.row)
+        saveArray.remove(at: indexPath.row)
+        userDefaults.set(self.saveArray, forKey: "saveData")
         let indexPaths = [indexPath]
         tableView.deleteRows(at: indexPaths, with: .automatic)
         
